@@ -63,12 +63,22 @@ function loadparams!(m, xs)
 end
 
 # CPU/GPU movement conveniences
+"""
+    cpu(m)
 
+Moves a paticular resource from where it is, onto the CPU.
+"""
 cpu(m) = fmap(x -> adapt(Array, x), m)
 
 _isbitsarray(::AbstractArray{<:Number}) = true
 _isbitsarray(::AbstractArray{T}) where T = isbitstype(T)
 _isbitsarray(x) = false
+
+"""
+    gpu(x)
+
+Moves a particular resource from where it is, onto the GPU, if available. It is a no-op otherwise.
+"""
 gpu(x) = use_cuda[] ? fmap(CUDA.cu, x; exclude = _isbitsarray) : x
 
 # Precision
